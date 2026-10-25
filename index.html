@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PSD_eNGINNo IoT SMART</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#eef3f3;--panel:#fff;--ink:#0f1f20;--mute:#5d7273;--line:#dbe5e5;--brand:#0f6b6e;--brand2:#14a3a8;--ok:#1f9d55;--warn:#c98000;--crit:#d23a3a;--off:#8a9696;--chip:#e5eeee;--okbg:#e7f6ee;--warnbg:#fff4dc;--critbg:#fde8e8;--offbg:#eef0f0;--shadow:0 1px 2px rgba(0,0,0,.04),0 6px 18px rgba(15,60,62,.06);--bte:#14a3a8;--btb:#e07a2f;--ubc:#6c5ce7}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1415;--panel:#122021;--ink:#e4efef;--mute:#8ea4a5;--line:#213435;--brand:#2bb5ba;--brand2:#5fd3d7;--chip:#1a2c2d;--okbg:#10291c;--warnbg:#2e2410;--critbg:#311616;--offbg:#1b2627;--shadow:0 1px 2px rgba(0,0,0,.3)}}
+:root[data-theme="dark"]{--bg:#0b1415;--panel:#122021;--ink:#e4efef;--mute:#8ea4a5;--line:#213435;--brand:#2bb5ba;--brand2:#5fd3d7;--chip:#1a2c2d;--okbg:#10291c;--warnbg:#2e2410;--critbg:#311616;--offbg:#1b2627;--shadow:0 1px 2px rgba(0,0,0,.3)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 "IBM Plex Sans Thai",system-ui,sans-serif}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+button{font:inherit;cursor:pointer}
+.app{display:grid;grid-template-columns:210px 1fr;grid-template-rows:auto 1fr;min-height:100vh}
+header{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:10px 18px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;letter-spacing:.2px}
+.logo i{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#fff;font-style:normal;font-size:13px}
+.logo small{display:block;font-weight:500;color:var(--mute);font-size:11px;line-height:1}
+.badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--chip);color:var(--mute)}
+.badge.demo{background:var(--warnbg);color:var(--warn)}.badge.live{background:var(--okbg);color:var(--ok)}
+.chips{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:5px 12px;border-radius:999px;font-size:13px}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.hdr-r{display:flex;align-items:center;gap:8px;color:var(--mute);font-size:12px}
+.ibtn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:5px 9px}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:14px 10px;position:sticky;top:57px;height:calc(100vh - 57px)}
+aside button{display:flex;width:100%;align-items:center;gap:10px;border:0;background:none;color:var(--ink);padding:9px 12px;border-radius:8px;text-align:left}
+aside button:hover{background:var(--chip)}
+aside button.on{background:var(--brand);color:#fff}
+aside button .cnt{margin-left:auto;background:var(--crit);color:#fff;border-radius:999px;font-size:11px;padding:0 7px;font-weight:600}
+aside .ver{position:absolute;bottom:12px;left:22px;font-size:11px;color:var(--mute)}
+main{padding:18px;min-width:0}
+section{display:none}section.on{display:block}
+h2{font-size:18px;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+h3{font-size:15px;margin:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+.kpi .l{color:var(--mute);font-size:12px}.kpi .v{font-size:24px;font-weight:700;line-height:1.2}.kpi .v small{font-size:13px;font-weight:500;color:var(--mute)}
+.kpi .s{font-size:12px;color:var(--mute)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow);margin-bottom:14px}
+.card-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.card-h .r{margin-left:auto;color:var(--mute);font-size:12px}
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+.chartbox{position:relative;height:260px}
+.bld{border-left:4px solid var(--brand2)}
+.floor{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:stretch;padding:8px 0;border-top:1px dashed var(--line)}
+.floor:first-of-type{border-top:0}
+.fl{font-weight:700;color:var(--mute);display:flex;align-items:center}
+.zones{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.zone{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel);cursor:pointer;transition:transform .1s}
+.zone:hover{transform:translateY(-1px)}
+.zone.ok{background:var(--okbg);border-color:transparent}.zone.warn{background:var(--warnbg);border-color:var(--warn)}.zone.crit{background:var(--critbg);border-color:var(--crit)}.zone.off{background:var(--offbg);border-color:var(--off)}
+.zone .t{font-size:24px;font-weight:700;line-height:1.1}.zone .t small{font-size:12px;font-weight:500;color:var(--mute)}
+.zone .m{font-size:12px;color:var(--mute);display:flex;gap:10px}
+.zone .tags{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.tag{font-size:11px;padding:1px 7px;border-radius:6px;background:var(--chip);color:var(--mute);font-weight:600}
+.tag.on{background:var(--brand);color:#fff}.tag.off{opacity:.8}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--ok)}
+.dot.warn{background:var(--warn)}.dot.crit{background:var(--crit)}.dot.off{background:var(--off)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--mute);font-weight:600;font-size:12px;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--chip)}
+.tbl{overflow-x:auto}
+.sev{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px}
+.sev.CRITICAL{background:var(--critbg);color:var(--crit)}.sev.WARNING{background:var(--warnbg);color:var(--warn)}.sev.INFO{background:var(--chip);color:var(--mute)}
+.st{font-size:11px;font-weight:600}.st.ACTIVE{color:var(--crit)}.st.ACK{color:var(--warn)}.st.CLEARED{color:var(--ok)}
+.btn{border:0;background:var(--brand);color:#fff;border-radius:8px;padding:6px 12px;font-weight:600}
+.btn.ghost{background:var(--chip);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+select,input{font:inherit;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.ctlgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.ctl{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.ctl-h{display:flex;align-items:center;gap:8px;font-size:13px}
+.ctl-h .mode{margin-left:auto}
+.ctl-b{display:flex;align-items:center;gap:10px;margin:10px 0 6px;flex-wrap:wrap}
+.sw{min-width:64px;border:1px solid var(--line);background:var(--chip);color:var(--mute);border-radius:999px;padding:5px 12px;font-weight:700}
+.sw.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.sp{display:flex;align-items:center;gap:6px}.sp button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-weight:700}
+.sp span{min-width:62px;text-align:center;font-weight:700}
+.lnk{border:0;background:none;color:var(--brand);font-size:12px;padding:0;text-decoration:underline}
+.ctl-f{font-size:12px;color:var(--mute)}
+.locked .ctl-b button{pointer-events:none;opacity:.45}
+.lockbar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:var(--warnbg);color:var(--warn);margin-bottom:14px;font-weight:600}
+.lockbar.ok{background:var(--okbg);color:var(--ok)}
+.lockbar .btn{margin-left:auto}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.on{display:flex}
+.modal .box{background:var(--panel);border-radius:14px;padding:18px;width:min(760px,100%);max-height:90vh;overflow:auto}
+.modal .box.sm{width:min(360px,100%)}
+.toast{position:fixed;bottom:18px;right:18px;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;opacity:0;transform:translateY(10px);transition:.2s;z-index:60;max-width:80vw}
+.toast.on{opacity:1;transform:none}
+.muted{color:var(--mute)}.right{text-align:right}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.empty{padding:24px;text-align:center;color:var(--mute)}
+.load{position:fixed;inset:0;display:grid;place-items:center;background:var(--bg);z-index:100;font-weight:600;color:var(--mute)}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+@media (max-width:760px){
+  .app{grid-template-columns:1fr}
+  aside{position:fixed;bottom:0;top:auto;left:0;right:0;height:auto;display:flex;padding:6px;z-index:30;border-right:0;border-top:1px solid var(--line)}
+  aside button{flex-direction:column;gap:2px;font-size:11px;padding:6px 2px;justify-content:center;text-align:center}
+  aside button .cnt{position:absolute;margin:0 0 0 22px}
+  aside .ver{display:none}
+  main{padding:12px 16px 80px}
+  header{padding:10px 16px}
+  .chips{margin-left:0;width:100%}
+  .hdr-r .upd{display:none}
+}
+</style>
+</head>
+<body>
+<div class="load" id="load">กำลังโหลด PSD_eNGINNo IoT SMART…</div>
+<div class="app">
+  <header>
+    <div class="logo"><i>IoT</i><div>PSD_eNGINNo IoT SMART<small>Smart Building Management</small></div></div>
+    <span class="badge" id="modeBadge">—</span>
+    <div class="chips" id="bldChips"></div>
+    <div class="hdr-r"><span class="upd" id="lastUpd">—</span><button class="ibtn" id="btnRefresh" title="รีเฟรช">⟳</button><button class="ibtn" id="btnTheme" title="ธีม">◐</button></div>
+  </header>
+  <aside id="nav">
+    <button data-page="dash" class="on"><span>▦</span><span>ภาพรวม</span></button>
+    <button data-page="alarm"><span>⚠</span><span>แจ้งเตือน</span><span class="cnt" id="almCnt" hidden>0</span></button>
+    <button data-page="energy"><span>ϟ</span><span>พลังงาน</span></button>
+    <button data-page="control"><span>⏻</span><span>ควบคุม</span></button>
+    <button data-page="devices"><span>☰</span><span>อุปกรณ์</span></button>
+    <div class="ver" id="ver"></div>
+  </aside>
+  <main>
+    <section id="p-dash" class="on">
+      <div class="kpis" id="dashKpi"></div>
+      <div class="grid2">
+        <div class="card"><div class="card-h"><h3>กำลังไฟฟ้ารวมรายอาคาร</h3><span class="r">24 ชั่วโมงล่าสุด · kW</span></div><div class="chartbox"><canvas id="chPower"></canvas></div></div>
+        <div class="card"><div class="card-h"><h3>Alarm ล่าสุด</h3><span class="r"><button class="lnk" data-goto="alarm">ดูทั้งหมด</button></span></div><div id="dashAlarms"></div></div>
+      </div>
+      <div id="dashBld"></div>
+    </section>
+
+    <section id="p-alarm">
+      <h2>แจ้งเตือน / Alarm</h2>
+      <div class="card">
+        <div class="card-h">
+          <div class="row"><select id="almFilter"><option value="open">ยังไม่ปิด (ACTIVE + ACK)</option><option value="ACTIVE">ACTIVE เท่านั้น</option><option value="all">ทั้งหมด 7 วัน</option></select>
+          <select id="almSev"><option value="">ทุกระดับ</option><option value="CRITICAL">CRITICAL</option><option value="WARNING">WARNING</option></select></div>
+          <span class="r" id="almInfo"></span>
+        </div>
+        <div class="tbl" id="almTable"></div>
+      </div>
+    </section>
+
+    <section id="p-energy">
+      <h2>พลังงาน & ค่าไฟ</h2>
+      <div class="kpis" id="engKpi"></div>
+      <div class="grid2">
+        <div class="card"><div class="card-h"><h3>พลังงานรายวัน</h3><span class="r">30 วันล่าสุด · kWh</span></div><div class="chartbox"><canvas id="chDaily"></canvas></div></div>
+        <div class="card"><div class="card-h"><h3>สัดส่วนการใช้ไฟเดือนนี้</h3></div><div class="chartbox"><canvas id="chMix"></canvas></div></div>
+      </div>
+      <div class="card"><div class="card-h"><h3>สรุปรายวัน</h3><span class="r"><button class="btn ghost" id="btnCsv">ดาวน์โหลด CSV</button></span></div><div class="tbl" id="engTable"></div></div>
+    </section>
+
+    <section id="p-control">
+      <h2>ควบคุมอุปกรณ์</h2>
+      <div class="lockbar" id="lockbar"><span id="lockTxt">🔒 ล็อกอยู่ — ใส่ PIN เพื่อสั่งงาน</span><button class="btn" id="btnUnlock">ปลดล็อก</button></div>
+      <div id="ctlBody"></div>
+      <div class="card"><div class="card-h"><h3>ประวัติคำสั่งล่าสุด</h3></div><div class="tbl" id="cmdTable"></div></div>
+    </section>
+
+    <section id="p-devices">
+      <h2>อุปกรณ์</h2>
+      <div class="card">
+        <div class="card-h"><input id="devSearch" placeholder="ค้นหา ID / ชื่อ" style="min-width:220px"><select id="devType"><option value="">ทุกประเภท</option><option>ENV</option><option>AC</option><option>LIGHT</option><option>METER</option></select><span class="r" id="devInfo"></span></div>
+        <div class="tbl" id="devTable"></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>การเชื่อมต่อ Backend</h3></div>
+        <p class="muted" style="margin:0 0 10px">ใส่ URL ของ Google Apps Script Web App (ลงท้าย <span class="mono">/exec</span>) เพื่อใช้ข้อมูลจริงจาก Google Sheets — เว้นว่างไว้ = โหมด DEMO (จำลองในเบราว์เซอร์)</p>
+        <div class="row"><input id="apiUrl" placeholder="https://script.google.com/macros/s/…/exec" style="flex:1;min-width:240px"><button class="btn" id="btnSaveApi">บันทึก & เชื่อมต่อ</button><button class="btn ghost" id="btnDemo">กลับเป็น DEMO</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="mHist"><div class="box"><div class="card-h"><h3 id="histTitle">ประวัติ</h3><span class="r"><select id="histHours"><option value="6">6 ชม.</option><option value="24" selected>24 ชม.</option></select> <button class="ibtn" data-close>✕</button></span></div><div id="histMeta" class="muted" style="margin-bottom:8px"></div><div class="chartbox"><canvas id="chHist"></canvas></div></div></div>
+<div class="modal" id="mPin"><div class="box sm"><h3 style="margin:0 0 10px">ปลดล็อกการควบคุม</h3><div style="display:grid;gap:8px"><input id="pinUser" placeholder="ชื่อผู้สั่งงาน"><input id="pinVal" type="password" inputmode="numeric" placeholder="PIN"><div class="row" style="justify-content:flex-end"><button class="btn ghost" data-close>ยกเลิก</button><button class="btn" id="btnPinOk">ยืนยัน</button></div><div class="muted" id="pinHint" style="font-size:12px"></div></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== CONFIG ===================== */
+const APP_VERSION = '0.1.0';
+const DEFAULT_API_URL = ''; // ใส่ URL Web App (…/exec) ตรงนี้เพื่อให้ทุกคนใช้ข้อมูลจริงเป็นค่าเริ่มต้น
+const BCOLOR = { BTE: '#14a3a8', BTB: '#e07a2f', UBCII: '#6c5ce7' };
+const TYPE_TH = { ENV: 'เซนเซอร์', AC: 'แอร์', LIGHT: 'ไฟ', METER: 'มิเตอร์' };
+
+const LS = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } };
+let API_URL = LS('psd_enginno_api') || DEFAULT_API_URL;
+const S = { page: 'dash', building: 'ALL', data: null, pin: null, user: LS('psd_enginno_user') || '', charts: {}, timer: null, histDev: null, energyRows: [] };
+
+/* ===================== DEMO ENGINE (จำลองในเบราว์เซอร์) ===================== */
+const Demo = (() => {
+  const B = { BTE: 3, BTB: 3, UBCII: 4 }, Z = ['A', 'B'], PIN = '1234', TARIFF = 4.5;
+  const RULES = [
+    ['R01', 'ENV', 'temp', '>', 28, 'WARNING', 'อุณหภูมิห้องสูงเกินกำหนด'], ['R02', 'ENV', 'temp', '>', 30, 'CRITICAL', 'อุณหภูมิห้องสูงวิกฤต'],
+    ['R03', 'ENV', 'hum', '>', 70, 'WARNING', 'ความชื้นสูงเกินกำหนด'], ['R04', 'ENV', 'co2', '>', 1000, 'WARNING', 'CO2 สูง ควรเพิ่มการระบายอากาศ'],
+    ['R05', 'AC', 'kw', '>', 9, 'WARNING', 'แอร์ใช้ไฟสูงผิดปกติ'], ['R06', 'METER', 'kw', '>', 85, 'WARNING', 'ความต้องการไฟฟ้าของอาคารสูง (Peak)'],
+    ['R07', 'ALL', 'online', '==', 0, 'CRITICAL', 'อุปกรณ์ขาดการเชื่อมต่อ']
+  ].map(r => ({ ruleId: r[0], type: r[1], metric: r[2], operator: r[3], threshold: r[4], severity: r[5], message: r[6] }));
+  let devs = [], alarms = [], cmds = [], hist = {}, agg = {}, last = 0;
+  const r2 = (v, n = 2) => Math.round(v * 10 ** n) / 10 ** n, rnd = (a, b) => a + Math.random() * (b - a);
+  const occ = h => h < 7 || h >= 20 ? .03 : h < 9 ? (h - 7) / 2 : (h >= 12 && h < 13) ? .6 : h < 17 ? .95 : Math.max(.05, .95 - (h - 17) * .3);
+  const ok = o => Promise.resolve(JSON.parse(JSON.stringify(Object.assign({ ok: true }, o))));
+
+  function seed() {
+    Object.keys(B).forEach(b => {
+      devs.push({ deviceId: b + '-MTR-MAIN', name: 'มิเตอร์หลัก ' + b, type: 'METER', building: b, floor: '-', zone: '-', enabled: true, state: 'ON', kw: 0, kwh: Math.round(10000 + Math.random() * 5000), online: 1 });
+      for (let f = 1; f <= B[b]; f++) Z.forEach(z => {
+        const p = b + '-F' + f + z;
+        devs.push({ deviceId: p + '-ENV', name: 'เซนเซอร์ห้อง ชั้น ' + f + ' โซน ' + z, type: 'ENV', building: b, floor: f, zone: z, enabled: true, state: 'ON', temp: 27, hum: 60, co2: 480, kw: 0, kwh: 0, online: 1 });
+        devs.push({ deviceId: p + '-AC', name: 'แอร์ ชั้น ' + f + ' โซน ' + z, type: 'AC', building: b, floor: f, zone: z, enabled: true, state: 'OFF', setpoint: 25, mode: 'AUTO', temp: 27, kw: 0, kwh: Math.round(Math.random() * 3000), online: 1 });
+        devs.push({ deviceId: p + '-LGT', name: 'ไฟแสงสว่าง ชั้น ' + f + ' โซน ' + z, type: 'LIGHT', building: b, floor: f, zone: z, enabled: true, state: 'OFF', mode: 'AUTO', kw: 0, kwh: Math.round(Math.random() * 800), online: 1 });
+      });
+    });
+  }
+
+  function step(now, ivH) {
+    const h = now.getHours() + now.getMinutes() / 60, work = now.getDay() !== 0, o = work ? occ(h) : .03;
+    const amb = 27 + 3 * Math.sin((h - 9) / 24 * 2 * Math.PI), key = d => d.building + '|' + d.floor + '|' + d.zone, ac = {};
+    const fp = Math.min(1, ivH / .25);
+    devs.filter(d => d.type === 'AC' || d.type === 'LIGHT').forEach(d => {
+      if (d.mode !== 'MANUAL') d.state = (d.type === 'AC' ? work && h >= 7.5 && h < 18 : work && h >= 7 && h < 19) ? 'ON' : 'OFF';
+      if (d.type === 'AC') { d.kw = d.state === 'ON' ? r2(Math.max(1.5, 3 + (amb - d.setpoint) * .45 + o * 2 + rnd(-.4, .4))) : .03; ac[key(d)] = d; }
+      else d.kw = d.state === 'ON' ? r2(.9 + o * .5 + rnd(-.1, .1)) : .01;
+    });
+    devs.filter(d => d.type === 'ENV').forEach(d => {
+      const a = ac[key(d)], on = a && a.state === 'ON';
+      const tg = on ? a.setpoint + .6 + o * .8 : amb - .5 + o * 1.2;
+      d.temp = r2(d.temp + (tg - d.temp) * Math.min(.45, .45 * fp * 4) + rnd(-.25, .25) * fp, 1);
+      d.hum = Math.round(Math.max(35, Math.min(90, (on ? 52 : 63) + rnd(-4, 4))));
+      d.co2 = Math.round(430 + o * 650 + rnd(-40, 40));
+      if (Math.random() < .01 * fp) d.temp = r2(d.temp + 3.5, 1);
+      if (a) a.temp = d.temp;
+    });
+    devs.filter(d => d.type === 'METER').forEach(d => {
+      d.kw = r2(devs.filter(x => x.building === d.building && (x.type === 'AC' || x.type === 'LIGHT')).reduce((s, x) => s + x.kw, 0) + 6 + o * 8 + rnd(-1, 1));
+    });
+    const day = ymd(now);
+    devs.forEach(d => {
+      d.kwh = r2(d.kwh + d.kw * ivH);
+      if (d.type !== 'ENV') { const a = agg[day] || (agg[day] = {}); const k = d.building + '|' + d.type; a[k] = (a[k] || 0) + d.kw * ivH; }
+      if (Math.random() < .002 * fp) { d.online = 0; return; }
+      d.online = 1; d.lastSeen = now.toISOString();
+      const H = hist[d.deviceId] || (hist[d.deviceId] = []);
+      if (!H.length || now - H[H.length - 1].t >= 5 * 60e3) H.push({ t: +now, temp: d.temp, hum: d.hum, co2: d.co2, kw: d.kw, kwh: d.kwh, state: d.state });
+      while (H.length && now - H[0].t > 26 * 3600e3) H.shift();
+    });
+    evaluate(now);
+  }
+
+  function evaluate(now) {
+    const open = {}; alarms.filter(a => a.status !== 'CLEARED').forEach(a => open[a.deviceId + '|' + a.ruleId] = a);
+    devs.forEach(d => RULES.forEach(r => {
+      if (r.type !== 'ALL' && r.type !== d.type) return;
+      const v = d[r.metric]; if (v === undefined || v === '') return;
+      if (r.metric !== 'online' && d.online === 0) return;
+      const t = r.threshold, hit = r.operator === '>' ? v > t : r.operator === '==' ? v === t : false, ex = open[d.deviceId + '|' + r.ruleId];
+      if (hit && !ex) alarms.push({ alarmId: 'ALM-' + Math.random().toString(16).slice(2, 10).toUpperCase(), ruleId: r.ruleId, time: now.toISOString(), deviceId: d.deviceId, building: d.building, floor: d.floor, zone: d.zone, metric: r.metric, value: v, threshold: t, severity: r.severity, message: r.message, status: 'ACTIVE', ackBy: '', ackTime: '', clearTime: '' });
+      else if (!hit && ex) { ex.status = 'CLEARED'; ex.clearTime = now.toISOString(); }
+    }));
+    const cut = now - 7 * 864e5; alarms = alarms.filter(a => new Date(a.time) >= cut || a.status !== 'CLEARED');
+  }
+
+  function synthDay(date, b) {
+    const f = B[b], dow = date.getDay(), w = dow === 0 ? .08 : dow === 6 ? .75 : 1, n = () => rnd(.92, 1.08);
+    const ac = f * 2 * 10.5 * 4.6 * w * n(), lg = f * 2 * 12 * 1.15 * Math.max(.1, w) * n(), base = (24 * 6 + 10 * 8 * w) * n();
+    return { AC: ac, LIGHT: lg, METER: ac + lg + base };
+  }
+
+  function boot() {
+    seed();
+    const start = new Date(); start.setHours(0, 0, 0, 0); start.setDate(start.getDate() - 1);
+    for (let t = +start; t <= Date.now(); t += 15 * 60e3) step(new Date(t), .25);
+    for (let i = 2; i <= 30; i++) {
+      const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - i);
+      const a = agg[ymd(d)] = {};
+      Object.keys(B).forEach(b => { const s = synthDay(d, b); Object.keys(s).forEach(t => a[b + '|' + t] = s[t]); });
+    }
+    last = Date.now();
+  }
+
+  function rowsFor(day) { return Object.entries(agg[day] || {}).map(([k, v]) => { const [b, t] = k.split('|'); return { date: day, building: b, type: t, kwh: r2(v), cost: r2(v * TARIFF) }; }); }
+
+  boot();
+  return {
+    tick() { const now = Date.now(); step(new Date(now), (now - last) / 3600e3); last = now; },
+    dashboard: () => ok({ version: APP_VERSION + '-demo', serverTime: new Date().toISOString(), devices: devs, alarms: alarms.filter(a => a.status !== 'CLEARED'), energyToday: rowsFor(ymd(new Date())), settings: { TARIFF, INTERVAL_MIN: 15, SIM_ENABLED: true } }),
+    history: (ids, hours) => { const cut = Date.now() - hours * 3600e3, s = {}; ids.forEach(id => s[id] = (hist[id] || []).filter(p => p.t >= cut)); return ok({ series: s }); },
+    energy: days => { const out = []; for (let i = days; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); out.push(...rowsFor(ymd(d))); } return ok({ rows: out }); },
+    alarms: () => ok({ alarms: alarms.slice().reverse() }),
+    commands: () => ok({ commands: cmds.slice(-50).reverse() }),
+    checkPin: b => ok({ ok: String(b.pin) === PIN }),
+    ack: b => { const a = alarms.find(x => x.alarmId === b.alarmId); if (a && a.status === 'ACTIVE') { a.status = 'ACK'; a.ackBy = b.user; a.ackTime = new Date().toISOString(); } return ok({ alarm: a }); },
+    control: b => {
+      if (String(b.pin) !== PIN) return Promise.resolve({ ok: false, error: 'PIN ไม่ถูกต้อง' });
+      const d = devs.find(x => x.deviceId === b.deviceId); let v = b.value;
+      if (b.field === 'state') { d.state = v; d.mode = 'MANUAL'; }
+      else if (b.field === 'setpoint') { v = r2(+v, 1); if (v < 18 || v > 30) return Promise.resolve({ ok: false, error: 'อุณหภูมิต้องอยู่ระหว่าง 18–30°C' }); d.setpoint = v; }
+      else if (b.field === 'mode') d.mode = v;
+      if (d.type === 'AC') d.kw = d.state === 'ON' ? r2(3 + Math.random() * 2) : .03; else d.kw = d.state === 'ON' ? 1.2 : .01;
+      cmds.push({ cmdId: 'CMD-' + Math.random().toString(16).slice(2, 10).toUpperCase(), time: new Date().toISOString(), deviceId: d.deviceId, field: b.field, value: v, user: b.user, status: 'APPLIED', note: 'demo' });
+      return ok({ device: d });
+    }
+  };
+})();
+
+/* ===================== API ===================== */
+async function liveGet(p) { const r = await fetch(API_URL + '?' + new URLSearchParams(p)); const j = await r.json(); if (!j.ok) throw new Error(j.error || 'error'); return j; }
+async function livePost(b) { const r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b) }); const j = await r.json(); if (j.ok === false && j.error) throw new Error(j.error); return j; }
+const api = {
+  dashboard: () => API_URL ? liveGet({ action: 'dashboard' }) : Demo.dashboard(),
+  history: (ids, hours) => API_URL ? liveGet({ action: 'history', deviceId: ids.join(','), hours }) : Demo.history(ids, hours),
+  energy: days => API_URL ? liveGet({ action: 'energy', days }) : Demo.energy(days),
+  alarms: days => API_URL ? liveGet({ action: 'alarms', days }) : Demo.alarms(days),
+  commands: () => API_URL ? liveGet({ action: 'commands' }) : Demo.commands(),
+  control: b => API_URL ? livePost(Object.assign({ action: 'control' }, b)) : Demo.control(b).then(j => { if (!j.ok) throw new Error(j.error); return j; }),
+  ack: b => API_URL ? livePost(Object.assign({ action: 'ack' }, b)) : Demo.ack(b),
+  checkPin: b => API_URL ? livePost(Object.assign({ action: 'checkPin' }, b)) : Demo.checkPin(b)
+};
+
+/* ===================== HELPERS ===================== */
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function ymd(d) { const x = new Date(d); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); }
+const fmtT = t => new Date(t).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+const fmtDT = t => t ? new Date(t).toLocaleString('th-TH', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '–';
+const num = (v, d = 1) => v === '' || v === null || v === undefined || isNaN(+v) ? '–' : (+v).toLocaleString('th-TH', { minimumFractionDigits: d, maximumFractionDigits: d });
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2600); }
+function chart(id, cfg) {
+  if (S.charts[id]) S.charts[id].destroy();
+  const el = document.getElementById(id); if (!el || !window.Chart) return;
+  Chart.defaults.color = cssv('--mute'); Chart.defaults.borderColor = cssv('--line'); Chart.defaults.font.family = '"IBM Plex Sans Thai",sans-serif';
+  S.charts[id] = new Chart(el, cfg);
+}
+const buildings = () => [...new Set((S.data?.devices || []).map(d => d.building))];
+const inScope = b => S.building === 'ALL' || S.building === b;
+const devsIn = () => (S.data?.devices || []).filter(d => inScope(d.building) && d.enabled !== false && String(d.enabled).toUpperCase() !== 'FALSE');
+const openAlarms = () => (S.data?.alarms || []).filter(a => inScope(a.building));
+function sevOf(d) {
+  if (!d) return 'off';
+  if (+d.online === 0) return 'off';
+  const a = (S.data?.alarms || []).filter(x => x.deviceId === d.deviceId && x.status !== 'CLEARED');
+  return a.some(x => x.severity === 'CRITICAL') ? 'crit' : a.length ? 'warn' : 'ok';
+}
+const worst = arr => ['off', 'crit', 'warn', 'ok'].find(s => arr.includes(s)) || 'ok';
+
+/* ===================== LOAD / RENDER ===================== */
+async function refresh(silent) {
+  try {
+    if (!API_URL) Demo.tick();
+    S.data = await api.dashboard();
+    $('#lastUpd').textContent = 'อัปเดต ' + fmtT(Date.now());
+    renderShell();
+    await renderPage();
+  } catch (e) { if (!silent) toast('โหลดข้อมูลไม่สำเร็จ: ' + e.message); console.error(e); }
+  finally { $('#load').style.display = 'none'; }
+}
+
+function renderShell() {
+  const b = $('#modeBadge');
+  b.textContent = API_URL ? (S.data.settings?.SIM_ENABLED ? 'LIVE · ข้อมูลจำลอง' : 'LIVE') : 'DEMO';
+  b.className = 'badge ' + (API_URL ? 'live' : 'demo');
+  $('#bldChips').innerHTML = ['ALL', ...buildings()].map(x => `<button class="chip ${S.building === x ? 'on' : ''}" data-b="${x}">${x === 'ALL' ? 'ทุกอาคาร' : x}</button>`).join('');
+  const n = (S.data.alarms || []).filter(a => a.status === 'ACTIVE').length;
+  const c = $('#almCnt'); c.hidden = !n; c.textContent = n;
+  $('#ver').textContent = 'v' + APP_VERSION + (S.data.version ? ' · API ' + S.data.version : '');
+}
+
+async function renderPage() {
+  if (S.page === 'dash') return renderDash();
+  if (S.page === 'alarm') return renderAlarms();
+  if (S.page === 'energy') return renderEnergy();
+  if (S.page === 'control') return renderControl();
+  if (S.page === 'devices') return renderDevices();
+}
+
+/* ---------- Dashboard ---------- */
+async function renderDash() {
+  const ds = devsIn(), env = ds.filter(d => d.type === 'ENV' && +d.online === 1), meters = ds.filter(d => d.type === 'METER');
+  const online = ds.filter(d => +d.online === 1).length, act = openAlarms().filter(a => a.status === 'ACTIVE');
+  const kw = meters.reduce((s, d) => s + (+d.kw || 0), 0);
+  const et = (S.data.energyToday || []).filter(r => r.type === 'METER' && inScope(r.building));
+  const kwhT = et.reduce((s, r) => s + (+r.kwh || 0), 0), costT = et.reduce((s, r) => s + (+r.cost || 0), 0);
+  const avgT = env.length ? env.reduce((s, d) => s + (+d.temp || 0), 0) / env.length : NaN;
+  const acOn = ds.filter(d => d.type === 'AC' && d.state === 'ON').length, acAll = ds.filter(d => d.type === 'AC').length;
+  $('#dashKpi').innerHTML = [
+    ['อุปกรณ์ออนไลน์', `${online}<small> / ${ds.length}</small>`, ds.length - online ? `ออฟไลน์ ${ds.length - online} ตัว` : 'ทุกตัวปกติ'],
+    ['Alarm ที่ยังไม่รับทราบ', `<span style="color:${act.length ? 'var(--crit)' : 'var(--ok)'}">${act.length}</span>`, `CRITICAL ${act.filter(a => a.severity === 'CRITICAL').length}`],
+    ['กำลังไฟฟ้ารวมตอนนี้', `${num(kw, 1)}<small> kW</small>`, `แอร์เปิด ${acOn}/${acAll} ตัว`],
+    ['พลังงานวันนี้', `${num(kwhT, 0)}<small> kWh</small>`, `≈ ${num(costT, 0)} บาท`],
+    ['อุณหภูมิเฉลี่ยในอาคาร', `${num(avgT, 1)}<small> °C</small>`, `จาก ${env.length} เซนเซอร์`]
+  ].map(k => `<div class="kpi"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
+
+  const al = openAlarms().slice().sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 6);
+  $('#dashAlarms').innerHTML = al.length ? al.map(a => `<div style="padding:7px 0;border-bottom:1px solid var(--line)"><div class="row"><span class="sev ${a.severity}">${a.severity}</span><b>${esc(a.building)}</b><span class="muted" style="margin-left:auto;font-size:12px">${fmtT(a.time)}</span></div><div style="font-size:13px">${esc(a.message)}</div><div class="muted mono" style="font-size:11px">${esc(a.deviceId)} · ${esc(a.metric)}=${esc(a.value)}</div></div>`).join('') : '<div class="empty">ไม่มี Alarm ค้าง 🎉</div>';
+
+  $('#dashBld').innerHTML = buildings().filter(inScope).map(b => {
+    const bd = ds.filter(d => d.building === b), m = bd.find(d => d.type === 'METER');
+    const floors = [...new Set(bd.filter(d => d.floor !== '-').map(d => +d.floor))].sort((x, y) => y - x);
+    const ba = openAlarms().filter(a => a.building === b && a.status === 'ACTIVE').length;
+    return `<div class="card bld" style="border-left-color:${BCOLOR[b] || 'var(--brand2)'}"><div class="card-h"><h3>อาคาร ${esc(b)}</h3><span class="tag">${floors.length} ชั้น</span>${ba ? `<span class="sev CRITICAL">Alarm ${ba}</span>` : ''}<span class="r">มิเตอร์หลัก <b class="mono">${num(m?.kw, 1)} kW</b> · สะสม ${num(m?.kwh, 0)} kWh</span></div>
+    ${floors.map(f => {
+      const zones = [...new Set(bd.filter(d => +d.floor === f).map(d => d.zone))].sort();
+      return `<div class="floor"><div class="fl">ชั้น ${f}</div><div class="zones">${zones.map(z => {
+        const zd = bd.filter(d => +d.floor === f && d.zone === z), e = zd.find(d => d.type === 'ENV'), a = zd.find(d => d.type === 'AC'), l = zd.find(d => d.type === 'LIGHT');
+        const st = worst(zd.map(sevOf));
+        return `<div class="zone ${st}" data-dev="${esc(e?.deviceId || '')}"><div class="row"><b>โซน ${esc(z)}</b><span class="dot ${st}" style="margin-left:auto"></span></div>
+          <div class="t">${e && +e.online ? num(e.temp, 1) : '–'}<small> °C</small></div>
+          <div class="m"><span>💧 ${e ? num(e.hum, 0) : '–'}%</span><span>CO₂ ${e ? num(e.co2, 0) : '–'} ppm</span></div>
+          <div class="tags">${a ? `<span class="tag ${a.state === 'ON' ? 'on' : 'off'}">แอร์ ${a.state}${a.state === 'ON' ? ' · ' + num(a.setpoint, 0) + '°' : ''}</span>` : ''}${l ? `<span class="tag ${l.state === 'ON' ? 'on' : 'off'}">ไฟ ${l.state}</span>` : ''}${a && a.mode === 'MANUAL' ? '<span class="tag">MANUAL</span>' : ''}</div></div>`;
+      }).join('')}</div></div>`;
+    }).join('')}</div>`;
+  }).join('');
+
+  try {
+    const r = await api.history(meters.map(d => d.deviceId), 24);
+    chart('chPower', {
+      type: 'line',
+      data: { datasets: meters.map(d => ({ label: d.building, data: (r.series[d.deviceId] || []).map(p => ({ x: new Date(p.t).getTime(), y: +p.kw })), borderColor: BCOLOR[d.building], backgroundColor: BCOLOR[d.building] + '22', fill: true, tension: .3, pointRadius: 0, borderWidth: 2 })) },
+      options: { maintainAspectRatio: false, animation: false, interaction: { mode: 'nearest', axis: 'x', intersect: false }, scales: { x: { type: 'linear', ticks: { callback: v => fmtT(v), maxTicksLimit: 8 } }, y: { beginAtZero: true } }, plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { title: i => fmtDT(i[0].parsed.x) } } } }
+    });
+  } catch (e) { console.error(e); }
+}
+
+/* ---------- Alarms ---------- */
+async function renderAlarms() {
+  const f = $('#almFilter').value, sv = $('#almSev').value;
+  let list = f === 'all' ? (await api.alarms(7)).alarms : S.data.alarms.slice().sort((a, b) => new Date(b.time) - new Date(a.time));
+  list = list.filter(a => inScope(a.building) && (f !== 'ACTIVE' || a.status === 'ACTIVE') && (!sv || a.severity === sv));
+  $('#almInfo').textContent = list.length + ' รายการ';
+  $('#almTable').innerHTML = list.length ? `<table><tr><th>เวลา</th><th>ระดับ</th><th>อาคาร</th><th>ตำแหน่ง</th><th>อุปกรณ์</th><th>ข้อความ</th><th class="right">ค่า / เกณฑ์</th><th>สถานะ</th><th></th></tr>${list.map(a => `<tr>
+    <td>${fmtDT(a.time)}</td><td><span class="sev ${a.severity}">${a.severity}</span></td><td><b>${esc(a.building)}</b></td>
+    <td>${a.floor !== '-' ? 'ชั้น ' + esc(a.floor) + ' / ' + esc(a.zone) : '–'}</td><td class="mono" style="font-size:12px">${esc(a.deviceId)}</td><td>${esc(a.message)}</td>
+    <td class="right mono">${esc(a.value)} / ${esc(a.threshold)}</td>
+    <td><span class="st ${a.status}">${a.status}</span>${a.ackBy ? `<div class="muted" style="font-size:11px">${esc(a.ackBy)} · ${fmtT(a.ackTime)}</div>` : ''}${a.status === 'CLEARED' && a.clearTime ? `<div class="muted" style="font-size:11px">ปิด ${fmtT(a.clearTime)}</div>` : ''}</td>
+    <td>${a.status === 'ACTIVE' ? `<button class="btn" data-ack="${esc(a.alarmId)}">รับทราบ</button>` : ''}</td></tr>`).join('')}</table>` : '<div class="empty">ไม่มีรายการ</div>';
+}
+
+/* ---------- Energy ---------- */
+async function renderEnergy() {
+  const r = await api.energy(30); S.energyRows = r.rows;
+  const rows = r.rows.filter(x => inScope(x.building)), bs = buildings().filter(inScope);
+  const days = [...new Set(rows.map(x => String(x.date)))].sort();
+  const mon = ymd(new Date()).slice(0, 7), tariff = S.data.settings?.TARIFF || 0;
+  const val = (d, b, t) => rows.filter(x => String(x.date) === d && x.building === b && x.type === t).reduce((s, x) => s + (+x.kwh || 0), 0);
+  const mtd = (b, t) => rows.filter(x => String(x.date).startsWith(mon) && x.building === b && x.type === t).reduce((s, x) => s + (+x.kwh || 0), 0);
+  const tot = bs.reduce((s, b) => s + mtd(b, 'METER'), 0);
+  const nDays = new Date().getDate(), dim = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+  $('#engKpi').innerHTML = [
+    `<div class="kpi"><div class="l">พลังงานเดือนนี้ (${bs.length > 1 ? 'รวม' : bs[0]})</div><div class="v">${num(tot, 0)}<small> kWh</small></div><div class="s">≈ ${num(tot * tariff, 0)} บาท · ${tariff} บ./kWh</div></div>`,
+    `<div class="kpi"><div class="l">คาดการณ์สิ้นเดือน</div><div class="v">${num(tot / nDays * dim, 0)}<small> kWh</small></div><div class="s">≈ ${num(tot / nDays * dim * tariff, 0)} บาท</div></div>`,
+    ...bs.map(b => `<div class="kpi" style="border-top:3px solid ${BCOLOR[b] || 'var(--brand)'}"><div class="l">${b} เดือนนี้</div><div class="v">${num(mtd(b, 'METER'), 0)}<small> kWh</small></div><div class="s">แอร์ ${num(mtd(b, 'AC') / (mtd(b, 'METER') || 1) * 100, 0)}% · ไฟ ${num(mtd(b, 'LIGHT') / (mtd(b, 'METER') || 1) * 100, 0)}%</div></div>`)
+  ].join('');
+  chart('chDaily', {
+    type: 'bar',
+    data: { labels: days.map(d => d.slice(8) + '/' + d.slice(5, 7)), datasets: bs.map(b => ({ label: b, data: days.map(d => +val(d, b, 'METER').toFixed(1)), backgroundColor: BCOLOR[b] || '#888', borderRadius: 3 })) },
+    options: { maintainAspectRatio: false, animation: false, scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }, plugins: { legend: { position: 'bottom' } } }
+  });
+  const sAC = bs.reduce((s, b) => s + mtd(b, 'AC'), 0), sL = bs.reduce((s, b) => s + mtd(b, 'LIGHT'), 0), sO = Math.max(0, tot - sAC - sL);
+  chart('chMix', {
+    type: 'doughnut',
+    data: { labels: ['แอร์', 'ไฟแสงสว่าง', 'อื่น ๆ'], datasets: [{ data: [sAC, sL, sO].map(v => +v.toFixed(1)), backgroundColor: ['#14a3a8', '#f2b705', '#8a9696'], borderWidth: 0 }] },
+    options: { maintainAspectRatio: false, animation: false, cutout: '62%', plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: c => `${c.label}: ${num(c.raw, 0)} kWh (${num(c.raw / (tot || 1) * 100, 0)}%)` } } } }
+  });
+  $('#engTable').innerHTML = `<table><tr><th>วันที่</th>${bs.map(b => `<th class="right">${b} (kWh)</th>`).join('')}<th class="right">รวม kWh</th><th class="right">ค่าไฟ (บาท)</th></tr>${days.slice().reverse().map(d => {
+    const t = bs.reduce((s, b) => s + val(d, b, 'METER'), 0);
+    return `<tr><td>${d}${d === ymd(new Date()) ? ' <span class="tag">วันนี้</span>' : ''}</td>${bs.map(b => `<td class="right mono">${num(val(d, b, 'METER'), 1)}</td>`).join('')}<td class="right mono"><b>${num(t, 1)}</b></td><td class="right mono">${num(t * tariff, 0)}</td></tr>`;
+  }).join('')}</table>`;
+}
+
+function downloadCsv() {
+  const rows = [['date', 'building', 'type', 'kwh', 'cost'], ...S.energyRows.filter(x => inScope(x.building)).map(x => [x.date, x.building, x.type, x.kwh, x.cost])];
+  const blob = new Blob(['\ufeff' + rows.map(r => r.join(',')).join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'psd-enginno-energy-' + ymd(new Date()) + '.csv'; a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* ---------- Control ---------- */
+async function renderControl() {
+  const unlocked = !!S.pin;
+  $('#lockbar').className = 'lockbar' + (unlocked ? ' ok' : '');
+  $('#lockTxt').textContent = unlocked ? `🔓 ปลดล็อกแล้ว — สั่งงานในชื่อ ${S.user}` : '🔒 ล็อกอยู่ — ใส่ PIN เพื่อสั่งงาน' + (API_URL ? '' : ' (DEMO: PIN 1234)');
+  $('#btnUnlock').textContent = unlocked ? 'ล็อก' : 'ปลดล็อก';
+  const ds = devsIn().filter(d => d.type === 'AC' || d.type === 'LIGHT');
+  $('#ctlBody').innerHTML = buildings().filter(inScope).map(b => {
+    const bd = ds.filter(d => d.building === b), floors = [...new Set(bd.map(d => +d.floor))].sort((x, y) => x - y);
+    return `<div class="card ${unlocked ? '' : 'locked'}"><div class="card-h"><h3>อาคาร ${esc(b)}</h3><span class="r">${bd.filter(d => d.state === 'ON').length}/${bd.length} เปิดอยู่</span>
+      ${unlocked ? `<span class="row"><button class="btn ghost" data-bulk="${esc(b)}" data-v="OFF">ปิดทั้งอาคาร</button><button class="btn ghost" data-bulkauto="${esc(b)}">ทุกตัวกลับ AUTO</button></span>` : ''}</div>
+      ${floors.map(f => `<div class="muted" style="font-weight:700;margin:10px 0 6px">ชั้น ${f}</div><div class="ctlgrid">${bd.filter(d => +d.floor === f).sort((x, y) => (x.zone + x.type).localeCompare(y.zone + y.type)).map(ctlCard).join('')}</div>`).join('')}</div>`;
+  }).join('');
+  try {
+    const c = await api.commands();
+    $('#cmdTable').innerHTML = c.commands.length ? `<table><tr><th>เวลา</th><th>อุปกรณ์</th><th>คำสั่ง</th><th>ผู้สั่ง</th><th>สถานะ</th></tr>${c.commands.map(x => `<tr><td>${fmtDT(x.time)}</td><td class="mono" style="font-size:12px">${esc(x.deviceId)}</td><td>${esc(x.field)} → <b>${esc(x.value)}</b></td><td>${esc(x.user)}</td><td><span class="tag">${esc(x.status)}</span></td></tr>`).join('')}</table>` : '<div class="empty">ยังไม่มีคำสั่ง</div>';
+  } catch (e) { console.error(e); }
+}
+
+function ctlCard(d) {
+  const on = d.state === 'ON', st = sevOf(d), off = +d.online === 0;
+  const sp = +d.setpoint || 25;
+  return `<div class="ctl"><div class="ctl-h"><span class="dot ${st}"></span><b>${d.type === 'AC' ? 'แอร์' : 'ไฟ'} โซน ${esc(d.zone)}</b><span class="tag mode ${d.mode === 'AUTO' ? '' : 'on'}">${esc(d.mode || '–')}</span></div>
+    <div class="ctl-b"><button class="sw ${on ? 'on' : ''}" data-act="state" data-id="${esc(d.deviceId)}" data-val="${on ? 'OFF' : 'ON'}" ${off ? 'disabled' : ''}>${on ? 'ON' : 'OFF'}</button>
+    ${d.type === 'AC' ? `<div class="sp"><button data-act="setpoint" data-id="${esc(d.deviceId)}" data-val="${sp - .5}">−</button><span>${num(sp, 1)}°C</span><button data-act="setpoint" data-id="${esc(d.deviceId)}" data-val="${sp + .5}">+</button></div>` : ''}
+    <button class="lnk" data-act="mode" data-id="${esc(d.deviceId)}" data-val="${d.mode === 'AUTO' ? 'MANUAL' : 'AUTO'}">${d.mode === 'AUTO' ? 'ล็อกเป็น MANUAL' : 'กลับเป็น AUTO'}</button></div>
+    <div class="ctl-f">${off ? 'ออฟไลน์' : `${num(d.kw, 2)} kW${d.type === 'AC' ? ' · ห้อง ' + num(d.temp, 1) + '°C' : ''}`}</div></div>`;
+}
+
+async function sendCtl(deviceId, field, value) {
+  try {
+    const r = await api.control({ deviceId, field, value, pin: S.pin, user: S.user });
+    const i = S.data.devices.findIndex(d => d.deviceId === deviceId); if (i >= 0 && r.device) S.data.devices[i] = r.device;
+    return true;
+  } catch (e) { toast('สั่งงานไม่สำเร็จ: ' + e.message); if (/PIN/.test(e.message)) S.pin = null; return false; }
+}
+
+/* ---------- Devices ---------- */
+function renderDevices() {
+  const q = $('#devSearch').value.trim().toLowerCase(), t = $('#devType').value;
+  const list = devsIn().filter(d => (!t || d.type === t) && (!q || (d.deviceId + ' ' + d.name).toLowerCase().includes(q)));
+  $('#devInfo').textContent = list.length + ' อุปกรณ์';
+  $('#apiUrl').value = API_URL;
+  $('#devTable').innerHTML = `<table><tr><th></th><th>Device ID</th><th>ชื่อ</th><th>ประเภท</th><th>อาคาร</th><th>ชั้น/โซน</th><th>สถานะ</th><th class="right">ค่าหลัก</th><th class="right">kW</th><th>อัปเดตล่าสุด</th></tr>${list.map(d => `<tr class="click" data-dev="${esc(d.deviceId)}">
+    <td><span class="dot ${sevOf(d)}"></span></td><td class="mono" style="font-size:12px">${esc(d.deviceId)}</td><td>${esc(d.name)}</td><td>${TYPE_TH[d.type] || esc(d.type)}</td><td>${esc(d.building)}</td>
+    <td>${d.floor !== '-' ? esc(d.floor) + ' / ' + esc(d.zone) : '–'}</td><td>${+d.online ? esc(d.state || '') + (d.mode ? ' · ' + esc(d.mode) : '') : '<span class="st ACTIVE">OFFLINE</span>'}</td>
+    <td class="right mono">${d.type === 'ENV' ? num(d.temp, 1) + '°C · ' + num(d.hum, 0) + '%' : d.type === 'AC' ? 'SP ' + num(d.setpoint, 1) + '°C' : num(d.kwh, 0) + ' kWh'}</td>
+    <td class="right mono">${d.type === 'ENV' ? '–' : num(d.kw, 2)}</td><td>${fmtDT(d.lastSeen)}</td></tr>`).join('')}</table>`;
+}
+
+async function openHist(id) {
+  const d = S.data.devices.find(x => x.deviceId === id); if (!d) return;
+  S.histDev = id; $('#mHist').classList.add('on');
+  $('#histTitle').textContent = d.name + ' · ' + d.building;
+  $('#histMeta').innerHTML = `<span class="mono">${esc(id)}</span> · ${TYPE_TH[d.type]} · ${+d.online ? 'ออนไลน์' : 'ออฟไลน์'}`;
+  const hrs = +$('#histHours').value, r = await api.history([id], hrs), pts = r.series[id] || [];
+  const ser = (k, label, color, axis) => ({ label, data: pts.map(p => ({ x: new Date(p.t).getTime(), y: +p[k] })), borderColor: color, backgroundColor: color, yAxisID: axis, pointRadius: 0, tension: .3, borderWidth: 2 });
+  const ds = d.type === 'ENV' ? [ser('temp', 'อุณหภูมิ °C', '#e07a2f', 'y'), ser('hum', 'ความชื้น %', '#14a3a8', 'y1'), ser('co2', 'CO₂ ppm', '#6c5ce7', 'y2')] : [ser('kw', 'กำลังไฟ kW', BCOLOR[d.building] || '#14a3a8', 'y')];
+  chart('chHist', {
+    type: 'line', data: { datasets: ds },
+    options: { maintainAspectRatio: false, animation: false, interaction: { mode: 'nearest', axis: 'x', intersect: false }, plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { title: i => fmtDT(i[0].parsed.x) } } },
+      scales: { x: { type: 'linear', ticks: { callback: v => fmtT(v), maxTicksLimit: 8 } }, y: { beginAtZero: d.type !== 'ENV' }, y1: { display: d.type === 'ENV', position: 'right', grid: { display: false } }, y2: { display: false } } }
+  });
+}
+
+/* ===================== EVENTS ===================== */
+function go(p) { S.page = p; $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.page === p)); $$('main section').forEach(s => s.classList.toggle('on', s.id === 'p-' + p)); renderPage(); window.scrollTo(0, 0); }
+$('#nav').addEventListener('click', e => { const b = e.target.closest('button[data-page]'); if (b) go(b.dataset.page); });
+document.addEventListener('click', async e => {
+  const t = e.target;
+  const g = t.closest('[data-goto]'); if (g) return go(g.dataset.goto);
+  const c = t.closest('[data-b]'); if (c) { S.building = c.dataset.b; renderShell(); return renderPage(); }
+  if (t.closest('[data-close]')) { t.closest('.modal').classList.remove('on'); return; }
+  if (t.classList.contains('modal')) { t.classList.remove('on'); return; }
+  const z = t.closest('[data-dev]'); if (z && z.dataset.dev) return openHist(z.dataset.dev);
+  const ak = t.closest('[data-ack]');
+  if (ak) {
+    let u = S.user || prompt('ชื่อผู้รับทราบ Alarm'); if (!u) return; S.user = u; LS('psd_enginno_user', u);
+    ak.disabled = true; try { await api.ack({ alarmId: ak.dataset.ack, user: u }); toast('รับทราบแล้ว'); await refresh(true); } catch (er) { toast(er.message); ak.disabled = false; }
+    return;
+  }
+  const a = t.closest('[data-act]');
+  if (a && S.pin) { a.disabled = true; if (await sendCtl(a.dataset.id, a.dataset.act, a.dataset.act === 'setpoint' ? +a.dataset.val : a.dataset.val)) toast('ส่งคำสั่งแล้ว'); renderControl(); return; }
+  const bk = t.closest('[data-bulk]');
+  if (bk && S.pin && confirm(`ปิดแอร์และไฟทั้งหมดในอาคาร ${bk.dataset.bulk}?`)) {
+    const list = devsIn().filter(d => d.building === bk.dataset.bulk && (d.type === 'AC' || d.type === 'LIGHT') && d.state === 'ON' && +d.online);
+    for (const d of list) await sendCtl(d.deviceId, 'state', 'OFF');
+    toast(`ส่งคำสั่งปิด ${list.length} ตัว`); renderControl(); return;
+  }
+  const ba = t.closest('[data-bulkauto]');
+  if (ba && S.pin) {
+    const list = devsIn().filter(d => d.building === ba.dataset.bulkauto && (d.type === 'AC' || d.type === 'LIGHT') && d.mode !== 'AUTO');
+    for (const d of list) await sendCtl(d.deviceId, 'mode', 'AUTO');
+    toast(`กลับเป็น AUTO ${list.length} ตัว`); renderControl(); return;
+  }
+});
+$('#btnUnlock').onclick = () => { if (S.pin) { S.pin = null; return renderControl(); } $('#pinUser').value = S.user; $('#pinVal').value = ''; $('#pinHint').textContent = API_URL ? 'PIN ตั้งค่าในชีต Settings (CONTROL_PIN)' : 'โหมด DEMO ใช้ PIN 1234'; $('#mPin').classList.add('on'); setTimeout(() => $('#pinVal').focus(), 50); };
+$('#btnPinOk').onclick = async () => {
+  const u = $('#pinUser').value.trim(), p = $('#pinVal').value.trim();
+  if (!u || !p) return toast('กรอกชื่อและ PIN');
+  try { const r = await api.checkPin({ pin: p }); if (!r.ok) return toast('PIN ไม่ถูกต้อง'); } catch (e) { return toast(e.message); }
+  S.pin = p; S.user = u; LS('psd_enginno_user', u); $('#mPin').classList.remove('on'); renderControl();
+};
+$('#pinVal').addEventListener('keydown', e => { if (e.key === 'Enter') $('#btnPinOk').click(); });
+$('#almFilter').onchange = $('#almSev').onchange = renderAlarms;
+$('#devSearch').oninput = $('#devType').onchange = renderDevices;
+$('#histHours').onchange = () => S.histDev && openHist(S.histDev);
+$('#btnCsv').onclick = downloadCsv;
+$('#btnRefresh').onclick = () => refresh();
+$('#btnSaveApi').onclick = async () => {
+  const u = $('#apiUrl').value.trim(); if (!/^https:\/\/script\.google\.com\/.+\/exec$/.test(u)) return toast('URL ต้องเป็น https://script.google.com/…/exec');
+  const old = API_URL; API_URL = u;
+  try { await liveGet({ action: 'ping' }); LS('psd_enginno_api', u); S.pin = null; toast('เชื่อมต่อสำเร็จ'); startTimer(); refresh(); }
+  catch (e) { API_URL = old; toast('เชื่อมต่อไม่สำเร็จ: ' + e.message); }
+};
+$('#btnDemo').onclick = () => { API_URL = ''; LS('psd_enginno_api', null); S.pin = null; toast('กลับเป็นโหมด DEMO'); startTimer(); refresh(); };
+$('#btnTheme').onclick = () => {
+  const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark'; LS('psd_enginno_theme', r.dataset.theme); renderPage();
+};
+function startTimer() { clearInterval(S.timer); S.timer = setInterval(() => { if (!document.hidden && !$('.modal.on')) refresh(true); }, API_URL ? 60000 : 15000); }
+
+(function init() {
+  const th = LS('psd_enginno_theme'); if (th) document.documentElement.dataset.theme = th;
+  startTimer(); refresh();
+})();
+</script>
+</body>
+</html>
