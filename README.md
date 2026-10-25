@@ -1,4 +1,4 @@
-# PSD_eNGINNo IoT SMART Building — v0.1.0
+# PSD_eNGINNo IoT SMART Building — v0.1.1
 
 ระบบบริหารอาคารอัจฉริยะสำหรับอาคาร **BTE / BTB / UBCII**
 Stack: `index.html` (GitHub Pages) + `Code.gs` (Google Apps Script) + Google Sheets
@@ -48,6 +48,7 @@ Stack: `index.html` (GitHub Pages) + `Code.gs` (Google Apps Script) + Google She
 - **Email**: ใส่ `ALERT_EMAIL`
 - **LINE**: ใช้ LINE Messaging API (LINE Notify ปิดบริการแล้ว) ใส่ `LINE_CHANNEL_TOKEN` และ `LINE_TO` (userId/groupId)
 - `NOTIFY_MIN_SEVERITY` = CRITICAL (ค่าเริ่มต้น) หรือ WARNING
+- **เวลาทำการ**: `COMFORT_WORKHOURS_ONLY` = TRUE → กฎอุณหภูมิ/ความชื้น/CO₂ ของเซนเซอร์ห้องเตือนเฉพาะ `WORK_START_H`–`WORK_END_H` (ค่าเริ่มต้น 07:30–18:00, จันทร์–เสาร์ ตั้ง `WORK_SATURDAY`) นอกเวลา Alarm เหล่านี้จะปิดอัตโนมัติ ส่วนกฎอุปกรณ์หลุด/ไฟฟ้ายังเตือนตลอด 24 ชม.
 - ระหว่างใช้ข้อมูลจำลอง แนะนำให้เว้นว่างไว้ หรือปิด `SIM_FAULTS` เพื่อไม่ให้ได้รับแจ้งเตือนจำลอง
 
 ## API
@@ -72,4 +73,13 @@ POST (body JSON, `Content-Type: text/plain`)
 ## ข้อจำกัด v0.1
 - PIN เดียวสำหรับทุกคน (ยังไม่มีระบบผู้ใช้/สิทธิ์)
 - Google Sheets เหมาะกับข้อมูลรอบ ≥ 5 นาที; ถ้าต้องการเรียลไทม์ระดับวินาที ควรย้ายไป Firebase/MQTT ในอนาคต
-- กฎ Alarm ประเมินตลอด 24 ชม. (นอกเวลาทำการที่แอร์ปิด อาจเห็น WARNING อุณหภูมิ)
+
+## อัปเดตเวอร์ชัน (ไม่ต้องเปลี่ยน URL)
+1. วาง `Code.gs` ใหม่ทับใน Apps Script → Save
+2. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy**
+3. อัปโหลด `index.html` ใหม่ขึ้น GitHub Pages
+ค่าตั้งใหม่จะถูกเพิ่มลงชีต Settings ให้อัตโนมัติในรอบถัดไป
+
+## ประวัติเวอร์ชัน
+- **0.1.1** — Alarm ความสบายของห้องเตือนเฉพาะเวลาทำการ · ตัวเลข Alarm ที่เมนูนับตามอาคารที่เลือก · กราฟกำลังไฟขยายเต็มการ์ด
+- **0.1.0** — เวอร์ชันแรก: Dashboard, Alarm, พลังงาน, ควบคุม, โหมด DEMO

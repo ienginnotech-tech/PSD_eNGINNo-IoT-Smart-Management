@@ -46,6 +46,8 @@ h3{font-size:15px;margin:0}
 .card-h .r{margin-left:auto;color:var(--mute);font-size:12px}
 .grid2{display:grid;grid-template-columns:2fr 1fr;gap:14px}
 .chartbox{position:relative;height:260px}
+.grid2>.card{display:flex;flex-direction:column}
+.grid2>.card>.chartbox{flex:1 1 auto;min-height:260px;height:auto}
 .bld{border-left:4px solid var(--brand2)}
 .floor{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:stretch;padding:8px 0;border-top:1px dashed var(--line)}
 .floor:first-of-type{border-top:0}
@@ -189,8 +191,8 @@ select,input{font:inherit;padding:6px 10px;border-radius:8px;border:1px solid va
 
 <script>
 /* ===================== CONFIG ===================== */
-const APP_VERSION = '0.1.0';
-const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbxuIvZ8AhlEjvq-ZH4mG4pqH41ZVJNMURli0yCn2uMby9ZyLzT-PWIv80YPj8iD8lzG/exec'; // ใส่ URL Web App (…/exec) ตรงนี้เพื่อให้ทุกคนใช้ข้อมูลจริงเป็นค่าเริ่มต้น
+const APP_VERSION = '0.1.1';
+const DEFAULT_API_URL = ''; // ใส่ URL Web App (…/exec) ตรงนี้เพื่อให้ทุกคนใช้ข้อมูลจริงเป็นค่าเริ่มต้น
 const BCOLOR = { BTE: '#14a3a8', BTB: '#e07a2f', UBCII: '#6c5ce7' };
 const TYPE_TH = { ENV: 'เซนเซอร์', AC: 'แอร์', LIGHT: 'ไฟ', METER: 'มิเตอร์' };
 
@@ -260,11 +262,12 @@ const Demo = (() => {
 
   function evaluate(now) {
     const open = {}; alarms.filter(a => a.status !== 'CLEARED').forEach(a => open[a.deviceId + '|' + a.ruleId] = a);
+    const hh = now.getHours() + now.getMinutes() / 60, comfortOff = !(now.getDay() !== 0 && hh >= 7.5 && hh < 18);
     devs.forEach(d => RULES.forEach(r => {
       if (r.type !== 'ALL' && r.type !== d.type) return;
       const v = d[r.metric]; if (v === undefined || v === '') return;
       if (r.metric !== 'online' && d.online === 0) return;
-      const t = r.threshold, hit = r.operator === '>' ? v > t : r.operator === '==' ? v === t : false, ex = open[d.deviceId + '|' + r.ruleId];
+      const t = r.threshold, hit = (comfortOff && d.type === 'ENV' && ['temp', 'hum', 'co2'].includes(r.metric)) ? false : r.operator === '>' ? v > t : r.operator === '==' ? v === t : false, ex = open[d.deviceId + '|' + r.ruleId];
       if (hit && !ex) alarms.push({ alarmId: 'ALM-' + Math.random().toString(16).slice(2, 10).toUpperCase(), ruleId: r.ruleId, time: now.toISOString(), deviceId: d.deviceId, building: d.building, floor: d.floor, zone: d.zone, metric: r.metric, value: v, threshold: t, severity: r.severity, message: r.message, status: 'ACTIVE', ackBy: '', ackTime: '', clearTime: '' });
       else if (!hit && ex) { ex.status = 'CLEARED'; ex.clearTime = now.toISOString(); }
     }));
@@ -372,7 +375,7 @@ function renderShell() {
   b.textContent = API_URL ? (S.data.settings?.SIM_ENABLED ? 'LIVE · ข้อมูลจำลอง' : 'LIVE') : 'DEMO';
   b.className = 'badge ' + (API_URL ? 'live' : 'demo');
   $('#bldChips').innerHTML = ['ALL', ...buildings()].map(x => `<button class="chip ${S.building === x ? 'on' : ''}" data-b="${x}">${x === 'ALL' ? 'ทุกอาคาร' : x}</button>`).join('');
-  const n = (S.data.alarms || []).filter(a => a.status === 'ACTIVE').length;
+  const n = (S.data.alarms || []).filter(a => a.status === 'ACTIVE' && inScope(a.building)).length;
   const c = $('#almCnt'); c.hidden = !n; c.textContent = n;
   $('#ver').textContent = 'v' + APP_VERSION + (S.data.version ? ' · API ' + S.data.version : '');
 }
