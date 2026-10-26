@@ -1,4 +1,4 @@
-# PSD_eNGINNo IoT SMART Building — v0.1.1
+# PSD_eNGINNo IoT SMART Building — v0.1.2
 
 ระบบบริหารอาคารอัจฉริยะสำหรับอาคาร **BTE / BTB / UBCII**
 Stack: `index.html` (GitHub Pages) + `Code.gs` (Google Apps Script) + Google Sheets
@@ -47,6 +47,7 @@ Stack: `index.html` (GitHub Pages) + `Code.gs` (Google Apps Script) + Google She
 ## แจ้งเตือน
 - **Email**: ใส่ `ALERT_EMAIL`
 - **LINE**: ใช้ LINE Messaging API (LINE Notify ปิดบริการแล้ว) ใส่ `LINE_CHANNEL_TOKEN` และ `LINE_TO` (userId/groupId)
+- **ทดสอบ LINE**: ใน Apps Script เลือกฟังก์ชัน `testLine` → Run → ดูผลใน Execution log
 - `NOTIFY_MIN_SEVERITY` = CRITICAL (ค่าเริ่มต้น) หรือ WARNING
 - **เวลาทำการ**: `COMFORT_WORKHOURS_ONLY` = TRUE → กฎอุณหภูมิ/ความชื้น/CO₂ ของเซนเซอร์ห้องเตือนเฉพาะ `WORK_START_H`–`WORK_END_H` (ค่าเริ่มต้น 07:30–18:00, จันทร์–เสาร์ ตั้ง `WORK_SATURDAY`) นอกเวลา Alarm เหล่านี้จะปิดอัตโนมัติ ส่วนกฎอุปกรณ์หลุด/ไฟฟ้ายังเตือนตลอด 24 ชม.
 - ระหว่างใช้ข้อมูลจำลอง แนะนำให้เว้นว่างไว้ หรือปิด `SIM_FAULTS` เพื่อไม่ให้ได้รับแจ้งเตือนจำลอง
@@ -81,5 +82,6 @@ POST (body JSON, `Content-Type: text/plain`)
 ค่าตั้งใหม่จะถูกเพิ่มลงชีต Settings ให้อัตโนมัติในรอบถัดไป
 
 ## ประวัติเวอร์ชัน
+- **0.1.2** — เพิ่ม `testLine()` ทดสอบส่ง LINE พร้อมคำอธิบายข้อผิดพลาด · บันทึก log เมื่อส่ง LINE ไม่สำเร็จ
 - **0.1.1** — Alarm ความสบายของห้องเตือนเฉพาะเวลาทำการ · ตัวเลข Alarm ที่เมนูนับตามอาคารที่เลือก · กราฟกำลังไฟขยายเต็มการ์ด
 - **0.1.0** — เวอร์ชันแรก: Dashboard, Alarm, พลังงาน, ควบคุม, โหมด DEMO
